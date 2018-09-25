@@ -1,16 +1,13 @@
 <resources>
-    <string name="app_name">MontyHall</string>
+    <string name="app_name">MontyHallgame</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="title">The Monty Hall Problem</string>
+    <string name="title">Monty Hall Problem</string>
     <string name="new_text">New</string>
     <string name="continue_text">Continue</string>
     <string name="about_text">About</string>
-    <string name="about">
-        This is St. Lawrence University CS450
-        Implementation of the Monty Hall Game.
-    </string>
-    <string name="about_title_text">About the Monty Hall Problem</string>
+    <string name="about">This is St.Lawrence CS450 implementation of the Monty Hall Game. </string>
+    <string name="about_title_text">About the Montu Hall Problem</string>
     <string name="ok">OK</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -18,4 +15,9 @@
     <string name="choose_a_door">Choose a door</string>
     <string name="wins">Wins</string>
     <string name="loss">Loss</string>
+    <string name="wins_nums">1</string>
+    <string name="loss_nums">0</string>
+    <string name="ask">Do you want to change door</string>
+    <string name="nortify_hint_door">Hint door is about to open</string>
+    <string name="result">Final Result in   what about it</string>
 </resources>
