@@ -10,47 +10,64 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/prompt"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_a_door"
+            android:textSize="26sp" />
+
+        <include
+            layout="@layout/door"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <GridLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_column="0"
                 android:layout_row="0"
-                android:text="@string/wins"/>
+                android:text="@string/wins" />
 
             <TextView
                 android:layout_column="0"
                 android:layout_row="1"
-                android:text="@string/loss"/>
+                android:text="@string/loss" />
 
             <TextView
-                android:layout_column="0"
-                android:layout_row="1"
-                android:text="@string/loss"/>
+                android:layout_column="1"
+                android:layout_row="0"
+                android:text="      " />
 
-            <!-- finish grid layout -->
+            <TextView
+                android:layout_column="1"
+                android:layout_row="1"
+                android:text="      " />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_row="0"
+                android:text="@string/wins_nums" />
+
+            <TextView
+                android:layout_column="2"
+                android:layout_row="1"
+                android:text="@string/loss_nums" />
 
         </GridLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <Button
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/choose_a_door"
-            android:id="@+id/prompt"
-            android:textSize="26sp"
-            />
-
-        <include layout="@layout/doors"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
+            android:text="Open the door"
+            android:id="@+id/button"/>
     </LinearLayout>
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
 </FrameLayout>

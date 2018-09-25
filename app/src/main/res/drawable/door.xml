@@ -3,31 +3,35 @@
 
     <item
         android:drawable="@drawable/closed_door"
-        android:maxLevel="0" />
+        android:maxLevel="0"
+        />
 
     <item
         android:drawable="@drawable/closed_door_chosen"
-        android:maxLevel="1" />
+        android:maxLevel="1"
+        />
 
     <item
         android:drawable="@drawable/car"
-        android:maxLevel="2" />
+        android:maxLevel="2"
+        />
 
     <item
         android:drawable="@drawable/goat"
-        android:maxLevel="3" />
-
+        android:maxLevel="3"
+        />
     <item
         android:drawable="@drawable/three"
-        android:maxLevel="4" />
+        android:maxLevel="4"
+        />
 
     <item
         android:drawable="@drawable/two"
-        android:maxLevel="5" />
+        android:maxLevel="5"
+        />
 
     <item
         android:drawable="@drawable/one"
-        android:maxLevel="6" />
-
-
+        android:maxLevel="6"
+        />
 </level-list>

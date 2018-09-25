@@ -7,11 +7,12 @@
     tools:context=".MainActivity">
 
     <fragment
-        android:name="edu.stlawu.montyhall.MainFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_main"
-        android:layout_gravity="center"
-        tools:layout="@layout/fragment_main"/>
+    android:name="com.example.leduc.montyhallgame.MainFragment"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/fragement_main"
+    android:layout_gravity="center"
+    tools:layout="@layout/fragment_main"
+    />
 
 </FrameLayout>
