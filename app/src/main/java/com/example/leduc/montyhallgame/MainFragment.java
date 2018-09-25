@@ -80,6 +80,14 @@ public class MainFragment extends Fragment {
             }
         });
 
+        View continueButton = rootView.findViewById(R.id.continue_button);
+        continueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //needs to remember the state
+            }
+        });
+
         return rootView;
     }
 
