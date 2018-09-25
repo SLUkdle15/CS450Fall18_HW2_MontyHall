@@ -170,6 +170,48 @@ public class GameFragment extends Fragment{
                     }, 0, 1000);
                 }
                 //stage 2 if the hint door is opened
+                else if(door_stage[0] || door_stage[1] || door_stage[2]){
+                    //now what is the chosen door
+                    if(chosen_index == the_other_door){
+                        for(int i = 0; i < 3; i++){
+                            if(i != chosen_index && i != hint_door){
+                                the_other_door = i;
+                            }
+                        }
+                    }
+
+                    t = new Timer();
+                    t.schedule(new TimerTask() {
+                        int count = 3;
+                        @Override
+                        public void run() {
+                            getActivity().runOnUiThread(new Runnable() {
+                                ImageButton The_Other_door = (ImageButton) list_View.get(the_other_door);
+                                ImageButton Car = (ImageButton) list_View.get(car_index);
+                                ImageButton Chosen_door = (ImageButton) list_View.get(chosen_index);
+                                @Override
+                                public void run() {
+                                    tv.setText(R.string.result);
+                                    if(count <= 6 && count >= 4){
+                                        The_Other_door.setImageLevel(count);
+                                    }else if (count > 6){
+                                        door_stage[car_index] = true;
+                                        Car.setClickable(false);
+                                        Car.setImageLevel(2);
+                                        if(car_index == chosen_index){
+                                            The_Other_door.setImageLevel(0);
+                                        }else{
+                                            Chosen_door.setImageLevel(1);
+                                        }
+                                        t.cancel();
+                                    }
+                                    count++;
+                                }
+                            });
+
+                        }
+                    }, 0, 1000);
+                }
             }
         });
 
