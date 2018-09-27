@@ -54,11 +54,13 @@
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:layout_row="0"
+                android:id="@+id/win"
                 android:text="@string/wins_nums" />
 
             <TextView
                 android:layout_column="2"
                 android:layout_row="1"
+                android:id="@+id/loss"
                 android:text="@string/loss_nums" />
 
         </GridLayout>
@@ -66,7 +68,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Open the door"
+            android:text="@string/Open_door"
             android:id="@+id/button"/>
     </LinearLayout>
 

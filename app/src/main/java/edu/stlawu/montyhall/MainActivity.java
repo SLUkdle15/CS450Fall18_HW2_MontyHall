@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.leduc.montyhallgame.R;
+
 import edu.stlawu.montyhall.MainFragment.OnFragmentInteractionListener;
 
 public class MainActivity
