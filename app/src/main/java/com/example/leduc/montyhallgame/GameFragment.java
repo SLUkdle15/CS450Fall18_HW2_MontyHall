@@ -312,6 +312,7 @@ public class GameFragment extends Fragment{
                                             firework.setVisibility(View.VISIBLE);
                                             win.setText(String.valueOf(number_win+=1));
                                             soundPool.play(carSound,1f,1f,0,0,1f);
+                                            soundPool.play(winSound,1f,1f,1,2,1f);
                                             total.setText(String.valueOf(number_win + number_loss));
                                         }else{
                                             //lost
@@ -319,7 +320,6 @@ public class GameFragment extends Fragment{
                                             Chosen_door.setImageLevel(1);
                                             loss.setText(String.valueOf(number_loss+=1));
                                             soundPool.play(failSound,1f,1f,0,0,1f);
-                                            soundPool.play(winSound,1f,1f,1,20,1f);
                                             total.setText(String.valueOf(number_win + number_loss));
                                         }
                                         t.cancel();
