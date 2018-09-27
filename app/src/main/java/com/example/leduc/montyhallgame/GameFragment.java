@@ -3,6 +3,8 @@ package com.example.leduc.montyhallgame;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,6 +40,9 @@ public class GameFragment extends Fragment{
     private int number_loss = 0;
     private ArrayList<View> list_View;
     private SharedPreferences.Editor pref_ed;
+    public AudioAttributes aa;
+    private SoundPool soundPool;
+    private int carSound, doorSound, failSound, winSound, goatSound;
 
 
     private void calculated_hint_door(int chosen_index){
@@ -93,6 +98,23 @@ public class GameFragment extends Fragment{
         list_View.add(door2);
         list_View.add(door3);
         bt = root.findViewById(R.id.button);
+
+        aa = new AudioAttributes
+                .Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .build();
+
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(5)
+                .setAudioAttributes(aa)
+                .build();
+
+        carSound = soundPool.load(getContext(), R.raw.car_sound,1);
+        goatSound = soundPool.load(getContext(), R.raw.goat_sound,1);
+        doorSound = soundPool.load(getContext(), R.raw.door_sound_short,1);
+        winSound = soundPool.load(getContext(), R.raw.win_sound,1);
+        failSound = soundPool.load(getContext(), R.raw.fail_sound,1);
 
         return root;
     }
@@ -206,6 +228,9 @@ public class GameFragment extends Fragment{
                                 public void run() {
                                     tv.setText(R.string.nortify_hint_door);
                                     if(count <= 6 && count >= 4){
+                                        if(count == 6){
+                                            soundPool.play(doorSound,1f,1f,0,0,1f);
+                                        }
                                         Hint_door.setImageLevel(count);
                                         The_Other_door.setImageLevel(count);
                                     }else if (count > 6){
@@ -214,6 +239,7 @@ public class GameFragment extends Fragment{
                                         The_Other_door.setClickable(true);
                                         Chosen.setClickable(true);
                                         door_stage[hint_door] = true;
+                                        soundPool.play(goatSound,1f,1f,0,0,1f);
                                         The_Other_door.setImageLevel(0);
                                         tv.setText(R.string.ask);
                                         t.cancel();
@@ -256,6 +282,9 @@ public class GameFragment extends Fragment{
                                     tv.setText(R.string.result);
                                     if(count <= 6 && count >= 4){
                                         The_Other_door.setImageLevel(count);
+                                        if(count==6){
+                                            soundPool.play(doorSound,1f,1f,0,0,1f);
+                                        }
                                     }else if (count > 6){
                                         door_stage[car_index] = true;
                                         Car.setImageLevel(2);
@@ -267,10 +296,12 @@ public class GameFragment extends Fragment{
                                             tv.setText(R.string.congrat);
                                             The_Other_door.setImageLevel(0);
                                             win.setText(String.valueOf(number_win+=1));
+                                            soundPool.play(carSound,1f,1f,0,0,1f);
                                         }else{
                                             tv.setText(R.string.lost);
                                             Chosen_door.setImageLevel(1);
                                             loss.setText(String.valueOf(number_loss+=1));
+                                            soundPool.play(failSound,1f,1f,0,0,1f);
                                         }
                                         t.cancel();
                                     }
