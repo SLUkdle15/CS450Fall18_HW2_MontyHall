@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -35,6 +36,12 @@ public class GameFragment extends Fragment{
     private int hint_door = -1;
     private int the_other_door = -1;
     private int car_index;
+    private int win = 0;
+    private int lost = 0;
+    static final String saveWin = "winscore";
+    static final String saveLose = "losescore";
+
+
 
     private void calculated_hint_door(int chosen_index){
         if(chosen_index == 0){
@@ -218,5 +225,18 @@ public class GameFragment extends Fragment{
 
         return root;
     }
+
+
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(saveWin, win);
+        outState.putInt(saveLose, lost);
+
+
+    }
+
+
 
 }
