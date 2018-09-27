@@ -5,7 +5,10 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -42,6 +45,10 @@ public class GameFragment extends Fragment{
     private int number_loss = 0;
     private ArrayList<View> list_View;
     private SharedPreferences.Editor pref_ed;
+    public AudioAttributes aa;
+    private SoundPool soundPool;
+    private int carSound, doorSound, failSound, winSound, goatSound;
+
 
     private void calculated_hint_door(int chosen_index){
         if(chosen_index == 0){
@@ -96,6 +103,23 @@ public class GameFragment extends Fragment{
         list_View.add(door2);
         list_View.add(door3);
         bt = root.findViewById(R.id.button);
+
+        aa = new AudioAttributes
+                .Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .build();
+
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(5)
+                .setAudioAttributes(aa)
+                .build();
+
+        carSound = soundPool.load(getContext(), R.raw.car_sound,1);
+        goatSound = soundPool.load(getContext(), R.raw.goat_sound,1);
+        doorSound = soundPool.load(getContext(), R.raw.door_sound_short,1);
+        winSound = soundPool.load(getContext(), R.raw.win_sound,1);
+        failSound = soundPool.load(getContext(), R.raw.fail_sound,1);
 
         return root;
     }
@@ -205,6 +229,9 @@ public class GameFragment extends Fragment{
                                 public void run() {
                                     tv.setText(R.string.nortify_hint_door);
                                     if(count <= 6 && count >= 4){
+                                        if(count == 6){
+                                            soundPool.play(doorSound,1f,1f,0,0,1f);
+                                        }
                                         Hint_door.setImageLevel(count);
                                         The_Other_door.setImageLevel(count);
                                     }else if (count > 6){
@@ -213,6 +240,7 @@ public class GameFragment extends Fragment{
                                         The_Other_door.setClickable(true);
                                         Chosen.setClickable(true);
                                         door_stage[hint_door] = true;
+                                        soundPool.play(goatSound,1f,1f,0,0,1f);
                                         The_Other_door.setImageLevel(0);
                                         tv.setText(R.string.ask);
                                         t.cancel();
@@ -255,6 +283,9 @@ public class GameFragment extends Fragment{
                                     tv.setText(R.string.result);
                                     if(count <= 6 && count >= 4){
                                         The_Other_door.setImageLevel(count);
+                                        if(count==6){
+                                            soundPool.play(doorSound,1f,1f,0,0,1f);
+                                        }
                                     }else if (count > 6){
                                         door_stage[car_index] = true;
                                         Car.setImageLevel(2);
@@ -266,10 +297,12 @@ public class GameFragment extends Fragment{
                                             tv.setText(R.string.congrat);
                                             The_Other_door.setImageLevel(0);
                                             win.setText(String.valueOf(number_win+=1));
+                                            soundPool.play(carSound,1f,1f,0,0,1f);
                                         }else{
                                             tv.setText(R.string.lost);
                                             Chosen_door.setImageLevel(1);
                                             loss.setText(String.valueOf(number_loss+=1));
+                                            soundPool.play(failSound,1f,1f,0,0,1f);
                                         }
                                         t.cancel();
                                     }
@@ -326,6 +359,66 @@ public class GameFragment extends Fragment{
     public void onDestroy() {
         super.onDestroy();
     }
+<<<<<<< HEAD
+=======
+
+    private void load_stage(){
+        car_index = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getInt("Car_index", -1);
+        chosen_index = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getInt("Chosen", -1);
+        hint_door = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getInt("hint_door", -1);
+        the_other_door = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getInt("Other_door", -1);
+        door_stage[0] = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getBoolean("door1", false);
+        door_stage[1] = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getBoolean("door2", false);
+        door_stage[2] = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getBoolean("door3", false);
+        number_win = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getInt("win", 0);
+        number_loss = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getInt("loss", 0);
+
+        //stage 1 no door is yet open, may be a door is chosen
+        if(chosen_index == -1){
+            reload_game();
+        }else {
+            ImageButton Chosen_door = (ImageButton) list_View.get(chosen_index);
+            Chosen_door.setImageLevel(1);
+            if(hint_door != -1 && door_stage[hint_door]) {
+                ImageButton The_Other_door = (ImageButton) list_View.get(the_other_door);
+                ImageButton Hint_door = (ImageButton) list_View.get(hint_door);
+                ImageButton Car = (ImageButton) list_View.get(car_index);
+                Hint_door.setImageLevel(3);
+                door_stage[hint_door] = true;
+                Hint_door.setClickable(false);
+                if (!door_stage[car_index]) {
+                    //we at stage 2:
+                    The_Other_door.setImageLevel(0 );
+                    tv.setText(R.string.ask);
+                } else {
+                    Chosen_door.setClickable(false);
+                    The_Other_door.setClickable(false);
+                    //all door has reveal
+                    Car.setImageLevel(2);
+                    bt.setText(R.string.restart);
+                    if (car_index == chosen_index) {
+                        tv.setText(R.string.congrat);
+                        The_Other_door.setImageLevel(0);
+                    } else {
+                        tv.setText(R.string.loss);
+                        Chosen_door.setImageLevel(1);
+                    }
+                }
+            }else if(hint_door != -1 && !door_stage[hint_door]){
+                //handle quit while image cout down at stage 1
+                for(int i = 0; i < 3; i++) {
+                    if(i != chosen_index) {
+                        ImageButton a = (ImageButton) list_View.get(i);
+                        a.setImageLevel(0);
+                    }
+                    tv.setText(R.string.choose_a_door);
+                }
+            }
+        }
+    }
+
+
+>>>>>>> 3ad8232e9ab5aeea9f86e2cf8daf8b611108ce63
 
     private void load_stage(){
         car_index = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getInt("Car_index", -1);

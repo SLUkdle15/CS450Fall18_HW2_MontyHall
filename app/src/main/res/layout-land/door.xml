@@ -25,10 +25,6 @@
             android:id="@+id/door3"
             android:layout_weight="1"
             style="@style/door" />
-
-
     </LinearLayout>
-
-
 
 </android.support.constraint.ConstraintLayout>
