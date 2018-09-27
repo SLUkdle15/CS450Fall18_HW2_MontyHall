@@ -2,39 +2,41 @@ package com.example.leduc.montyhallgame;
 
 
 import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStructure;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class GameFragment extends Fragment{
+    //TODO static final all string
+    public static final String PREF_NAME = "MontyHall";
     private boolean[] dict;
     private boolean[] door_stage;
-    private static TextView tv;
+    private TextView tv;
+    private TextView win;
+    private TextView loss;
+    private Button bt;
     private Timer t;
     private int chosen_index = -1;
     private int hint_door = -1;
     private int the_other_door = -1;
-    private int car_index;
+    private int car_index = -1;
+    private int number_win = 0;
+    private int number_loss = 0;
+    private ArrayList<View> list_View;
+    private SharedPreferences.Editor pref_ed;
 
     private void calculated_hint_door(int chosen_index){
         if(chosen_index == 0){
@@ -74,25 +76,50 @@ public class GameFragment extends Fragment{
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_game, container, false);
 
-        View door1 = root.findViewById(R.id.door1);
+        final View door1 = root.findViewById(R.id.door1);
         View door2 = root.findViewById(R.id.door2);
         View door3 = root.findViewById(R.id.door3);
 
         tv = root.findViewById(R.id.prompt);
+        win = root.findViewById(R.id.win);
+        loss = root.findViewById(R.id.loss);
 
-        final ArrayList<View> list_View = new ArrayList<>();
+        list_View = new ArrayList<>();
         dict = new boolean[]{false, false, false};
         door_stage = new boolean[]{false, false, false};
         list_View.add(door1);
         list_View.add(door2);
         list_View.add(door3);
+        bt = root.findViewById(R.id.button);
 
-        //randomly assign which one has a car.
-        car_index = (int) (Math.random() * 2);
-        dict[car_index] = true;
+        return root;
+    }
 
+    private void reload_game(){
+        if(door_stage[0] && door_stage[1] && door_stage[2]){
+            dict = new boolean[]{false, false, false};
+            door_stage = new boolean[]{false, false, false};
+            tv.setText(R.string.choose_a_door);
+            for(int i = 0; i < list_View.size(); i ++) {
+                ImageButton a = (ImageButton) list_View.get(i);
+                a.setImageLevel(0);
+                a.setClickable(true);
+            }
+            car_index = (int) (Math.random() * 2);
+            dict[car_index] = true;
+            chosen_index = -1; hint_door = -1; the_other_door = -1;
+            bt.setText(R.string.Open_door);
+        }
+    }
 
-        //TODO load the stage here after reconstructing
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
         //listener for door
         for(int i = 0; i < list_View.size(); i ++){
@@ -117,26 +144,53 @@ public class GameFragment extends Fragment{
         }
 
         //Button listener
-        //TODO disable image clickable while countdown
-        Button bt = root.findViewById(R.id.button);
+        //TODO disable button while image count
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // stage 1: all door were closed
                 if(!door_stage[0] && !door_stage[1] && !door_stage[2] && chosen_index != -1){
+                    bt.setClickable(false);
+
+                    //randomly assign which one has a car.
+                    //if(car_index == -1) {
+                    for(int i = 0; i< 3; i++){
+                        dict[i] = false;
+                    }
+                        car_index = (int) (Math.random() * 2);
+                        dict[car_index] = true;
+                    //}
+
                     //find the hint door.
-                    for(int i = 0; i < list_View.size(); i++){
+                    //if(hint_door == -1) {
+                    for (int i = 0; i < list_View.size(); i++) {
                         //if chosen is a goat
-                        if (!dict[chosen_index]){
-                            if(!dict[i] && i != chosen_index){
+                        if (!dict[chosen_index]) {
+                            if (!dict[i] && i != chosen_index) {
                                 hint_door = i;
                                 the_other_door = car_index;
                             }
-                        }else{
+                        } else {
                             //pull a 50 - 50 to open the hind door if chosen door is a car
                             calculated_hint_door(chosen_index);
                         }
                     }
+
+//                    }//else{
+//                        //find the other door
+//                        for(int i = 0; i < 3; i++){
+//                            if(i!= hint_door && i!= chosen_index){
+//                                the_other_door = i;
+//                            }
+//                        }
+//                    }
+
+                    final ImageButton Hint_door = (ImageButton) list_View.get(hint_door);
+                    final ImageButton The_Other_door = (ImageButton) list_View.get(the_other_door);
+                    final ImageButton Chosen = (ImageButton) list_View.get(chosen_index);
+                    Hint_door.setClickable(false);
+                    The_Other_door.setClickable(false);
+                    Chosen.setClickable(false);
 
                     //start the timer
                     t = new Timer();
@@ -146,8 +200,6 @@ public class GameFragment extends Fragment{
                         @Override
                         public void run() {
                             getActivity().runOnUiThread(new Runnable() {
-                                ImageButton Hint_door = (ImageButton) list_View.get(hint_door);
-                                ImageButton The_Other_door = (ImageButton) list_View.get(the_other_door);
                                 @Override
                                 public void run() {
                                     tv.setText(R.string.nortify_hint_door);
@@ -156,11 +208,14 @@ public class GameFragment extends Fragment{
                                         The_Other_door.setImageLevel(count);
                                     }else if (count > 6){
                                         Hint_door.setImageLevel(3);
-                                        Hint_door.setClickable(false);
+                                        //door cant click while image count down is running
+                                        The_Other_door.setClickable(true);
+                                        Chosen.setClickable(true);
                                         door_stage[hint_door] = true;
                                         The_Other_door.setImageLevel(0);
                                         tv.setText(R.string.ask);
                                         t.cancel();
+                                        bt.setClickable(true);
                                     }
                                     count++;
                                 }
@@ -170,7 +225,8 @@ public class GameFragment extends Fragment{
                     }, 0, 1000);
                 }
                 //stage 2 if the hint door is opened
-                else if(door_stage[0] || door_stage[1] || door_stage[2]){
+                else if(chosen_index != -1 && door_stage[hint_door] && !door_stage[car_index]){
+                    bt.setClickable(false);
                     //now what is the chosen door
                     if(chosen_index == the_other_door){
                         for(int i = 0; i < 3; i++){
@@ -180,15 +236,19 @@ public class GameFragment extends Fragment{
                         }
                     }
 
+                    final ImageButton The_Other_door = (ImageButton) list_View.get(the_other_door);
+                    final ImageButton Car = (ImageButton) list_View.get(car_index);
+                    final ImageButton Chosen_door = (ImageButton) list_View.get(chosen_index);
+
+                    The_Other_door.setClickable(false);
+                    Chosen_door.setClickable(false);
+
                     t = new Timer();
                     t.schedule(new TimerTask() {
                         int count = 3;
                         @Override
                         public void run() {
                             getActivity().runOnUiThread(new Runnable() {
-                                ImageButton The_Other_door = (ImageButton) list_View.get(the_other_door);
-                                ImageButton Car = (ImageButton) list_View.get(car_index);
-                                ImageButton Chosen_door = (ImageButton) list_View.get(chosen_index);
                                 @Override
                                 public void run() {
                                     tv.setText(R.string.result);
@@ -196,12 +256,19 @@ public class GameFragment extends Fragment{
                                         The_Other_door.setImageLevel(count);
                                     }else if (count > 6){
                                         door_stage[car_index] = true;
-                                        Car.setClickable(false);
                                         Car.setImageLevel(2);
+                                        bt.setClickable(true);
+                                        bt.setText(R.string.restart);
+                                        door_stage[the_other_door] = true;
+                                        door_stage[chosen_index] = true;
                                         if(car_index == chosen_index){
+                                            tv.setText(R.string.congrat);
                                             The_Other_door.setImageLevel(0);
+                                            win.setText(String.valueOf(number_win+=1));
                                         }else{
+                                            tv.setText(R.string.lost);
                                             Chosen_door.setImageLevel(1);
+                                            loss.setText(String.valueOf(number_loss+=1));
                                         }
                                         t.cancel();
                                     }
@@ -211,12 +278,30 @@ public class GameFragment extends Fragment{
 
                         }
                     }, 0, 1000);
+                }else if (door_stage[0] && door_stage[1] && door_stage[2]){
+                    //Game now restart
+                    reload_game();
                 }
             }
         });
 
 
-        return root;
+        pref_ed = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit();
+        boolean newclick = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getBoolean("NewClicked", false);
+        boolean conClick = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).getBoolean("CONClicked", false);
+
+        //if it is a new game
+        if(newclick){
+            number_win = 0;
+            number_loss = 0;
+            reload_game();
+        }else{
+            //load_stage();
+        }
+
+        win.setText(String.valueOf(number_win));
+        loss.setText(String.valueOf(number_loss));
     }
+
 
 }

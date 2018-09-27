@@ -16,6 +16,7 @@ public class MainFragment extends Fragment {
 
     public static final String PREF_NAME = "MontyHall";
     public static final String NEW_CLICKED = "NewClicked";
+    public static final String CON_CLICKED = "CONClicked";
 
     private OnFragmentInteractionListener mListener;
     private int x = 0;
@@ -85,6 +86,11 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //needs to remember the state
+                SharedPreferences.Editor pref_ed = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+                        .edit();
+                pref_ed.putBoolean(CON_CLICKED, true).apply();
+                Intent intent = new Intent(getActivity(), GameActivity.class);
+                getActivity().startActivity(intent);
             }
         });
 

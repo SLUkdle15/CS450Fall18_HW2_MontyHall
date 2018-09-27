@@ -15,9 +15,14 @@
     <string name="choose_a_door">Choose a door</string>
     <string name="wins">Wins</string>
     <string name="loss">Loss</string>
-    <string name="wins_nums">1</string>
+    <string name="wins_nums">0</string>
     <string name="loss_nums">0</string>
-    <string name="ask">Do you want to change door</string>
-    <string name="nortify_hint_door">Hint door is about to open</string>
-    <string name="result">Final Result in   what about it</string>
+    <string name="ask">Change door?
+    </string>
+    <string name="nortify_hint_door">Opening Hint Door</string>
+    <string name="result">Final Result</string>
+    <string name="restart">Restart?</string>
+    <string name="congrat">YOU WIN!</string>
+    <string name="lost">YOU LOST!</string>
+    <string name="Open_door">Open the door</string>
 </resources>
